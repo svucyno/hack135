@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicAI Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #dc2626;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .issues {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .issue {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .issue:last-child {
+            border-bottom: none;
+        }
+        .status-reported { color: #f59e0b; }
+        .status-resolved { color: #10b981; }
+        .status-in-progress { color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CivicAI Dashboard</h1>
+        <p>Smart Civic Problem Management</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <h3>Total Issues</h3>
+            <p style="font-size: 2em; color: #dc2626;">{{ total_issues }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Solved Issues</h3>
+            <p style="font-size: 2em; color: #10b981;">{{ solved_issues }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Pending Issues</h3>
+            <p style="font-size: 2em; color: #f59e0b;">{{ pending_issues }}</p>
+        </div>
+    </div>
+
+    <div class="issues">
+        <h2>Recent Issues</h2>
+        {% if issues %}
+            {% for issue in issues %}
+                <div class="issue">
+                    <h3>{{ issue.title }}</h3>
+                    <p>{{ issue.description[:100] }}...</p>
+                    <p><strong>Location:</strong> {{ issue.location }}</p>
+                    <p><strong>Priority:</strong> {{ issue.priority }}</p>
+                    <p><strong>Status:</strong> <span class="status-{{ issue.status.lower().replace(' ', '-') }}">{{ issue.status }}</span></p>
+                    <p><strong>Created:</strong> {{ issue.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    {% if issue.author %}
+                        <p><strong>Reported by:</strong> {{ issue.author.name }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No issues reported yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
