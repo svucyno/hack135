@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Login System</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #141e30, #243b55);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+    }
+
+    .container {
+        width: 420px;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(20px);
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        overflow: hidden;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #00f5ff;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .registerLink {
+        font-size: 14px;
+        text-align: right;
+        color: #00f5ff;
+        cursor: pointer;
+        font-weight: 700;
+        margin-left: 8px;
+    }
+
+    /* tabs for sign in / register */
+    .tabs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .tab {
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.03);
+        color: #cdefff;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.15s;
+    }
+
+    .tab.active {
+        background: linear-gradient(90deg, rgba(0,245,255,0.14), rgba(0,245,255,0.06));
+        box-shadow: 0 6px 18px rgba(0,245,255,0.08);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    input {
+        width: 100%;
+        padding: 13px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 10px;
+        outline: none;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        font-size: 14px;
+    }
+
+    input::placeholder {
+        color: #ccc;
+    }
+
+    input:focus {
+        border: 1px solid #00f5ff;
+        box-shadow: 0 0 10px #00f5ff;
+    }
+
+    button {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #ff512f, #dd2476);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 12px;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px #ff512f;
+    }
+
+    .toggle {
+        text-align: center;
+        margin-top: 18px;
+        cursor: pointer;
+        color: #00f5ff;
+        font-weight: bold;
+    }
+
+    .toggle:hover {
+        text-decoration: underline;
+    }
+
+    marquee {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+        color: #00f5ff;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .hidden {
+        display: none;
+    }
+    .error-message {
+        color: #ff6b6b;
+        background: rgba(255,107,107,0.06);
+        padding: 6px 8px;
+        border-radius: 8px;
+        margin: 6px 0 8px 0;
+        font-size: 13px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- LOGIN FORM -->
+<div id="loginForm">
+    <marquee behavior="scroll" direction="left">🔥 Welcome Back! Secure Login Portal 🔐</marquee>
+    <div class="header">
+        <h2>Login for CivicAI</h2>
+        <div class="tabs">
+            <div id="tabSignIn" class="tab active" onclick="showSignIn()">Sign In</div>
+            <div id="tabRegister" class="tab" onclick="showRegister()">Sign Up</div>
+        </div>
+    </div>
+    <input type="text" id="loginUserId" placeholder="User ID">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div class="toggle" style="margin-top:8px;" onclick="showRecover()">Forgot Password?</div>
+</div>
+
+<!-- REGISTER FORM -->
+<div id="registerForm" class="hidden">
+    <marquee behavior="scroll" direction="right">✨ Create Your Account & Join Us Today 🚀</marquee>
+    <h2>Sign Up for CivicAI</h2>
+    <input id="regUserId" type="text" placeholder="User ID">
+    <input id="regPassword" type="password" placeholder="Password">
+    <input id="regConfirmPassword" type="password" placeholder="Confirm Password">
+    <input id="regMobile" type="text" placeholder="Mobile Number">
+
+    <button onclick="register()">Sign Up</button>
+
+    <div class="toggle" onclick="showLogin()">⬅ Back to Login</div>
+</div>
+
+<!-- RECOVER FORM -->
+<div id="recoverForm" class="hidden">
+    <marquee behavior="scroll" direction="left">🔐 Recover Your Password — Secure OTP Verification</marquee>
+    <h2>Recover Password</h2>
+
+    <!-- Step 1: request OTP -->
+    <div id="recoverStep1">
+        <input type="text" id="recoverUserId" placeholder="User ID">
+        <div id="recoverUserError" class="error-message hidden" aria-live="polite"></div>
+        <button onclick="sendOTP()">Send OTP</button>
+    </div>
+
+    <!-- Step 2: verify OTP -->
+    <div id="recoverStep2" class="hidden">
+        <input type="text" id="recoverOtpInput" placeholder="Enter OTP">
+        <div style="display:flex;gap:8px;">
+            <button onclick="verifyOTP()">Verify OTP</button>
+            <button id="resendBtn" onclick="resendOTP()">Resend OTP</button>
+            <div id="resendTimer" style="align-self:center;color:#ccc;font-size:13px"></div>
+        </div>
+    </div>
+
+    <!-- Step 3: reset password -->
+    <div id="recoverStep3" class="hidden">
+        <input type="password" id="newPassword" placeholder="New Password">
+        <input type="password" id="confirmNewPassword" placeholder="Confirm New Password">
+        <button onclick="resetPassword()">Reset Password</button>
+    </div>
+
+    <div class="toggle" onclick="showLogin()">⬅ Back to Login</div>
+</div>
+
+</div>
+
+<script>
+const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3001' : '';
+
+function apiFetch(path, options = {}) {
+    return fetch(`${API_BASE}${path}`, options);
+}
+
+document.addEventListener('DOMContentLoaded', showSignIn);
+
+function setActiveTab(name) {
+    const s = document.getElementById('tabSignIn');
+    const r = document.getElementById('tabRegister');
+    if (s) s.classList.toggle('active', name === 'signin');
+    if (r) r.classList.toggle('active', name === 'register');
+}
+
+function showSignIn() {
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+    setActiveTab('signin');
+    resetRecoverForm();
+}
+
+function showRegister() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registerForm').classList.remove('hidden');
+    setActiveTab('register');
+    // ensure recover form is hidden and reset
+    resetRecoverForm();
+}
+
+function showLogin() {
+    // delegate to showSignIn to keep behavior consistent
+    showSignIn();
+}
+
+function validatePassword(password) {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,16}$/;
+    return regex.test(password);
+}
+
+function login() {
+    // call API to login; fallback to simulated success
+    (async () => {
+        const userId = document.getElementById('loginUserId').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!userId) { alert('Please enter User ID'); return; }
+        if (!validatePassword(password)) { alert('Password must be 8-16 characters, include letters, numbers & special characters'); return; }
+
+        try {
+            const res = await apiFetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, password })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+                alert(data.message || 'Login Successful ✅');
+            } else {
+                alert(data.message || 'Login failed');
+            }
+        } catch (e) {
+            // fallback: simulated success for offline/demo
+            alert('Login Successful ✅ (simulated)');
+        }
+    })();
+}
+
+function register() {
+    (async () => {
+        const userId = document.getElementById('regUserId').value.trim();
+        const p1 = document.getElementById('regPassword').value;
+        const p2 = document.getElementById('regConfirmPassword').value;
+        const mobile = document.getElementById('regMobile').value.trim();
+
+        if (!userId) { alert('Enter User ID'); return; }
+        if (p1 !== p2) { alert('Passwords do not match'); return; }
+        if (!validatePassword(p1)) { alert('Password must be 8-16 characters, include letters, numbers & special characters'); return; }
+
+        try {
+            const res = await apiFetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, password: p1, mobile })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+                alert(data.message || 'Registration successful');
+                showSignIn();
+            } else {
+                alert(data.message || 'Registration failed');
+            }
+        } catch (e) {
+            alert('Please enter all details correctly 📋 (simulated)');
+        }
+    })();
+}
+
+// --- Password recovery (OTP) ---
+let _currentOtp = null;
+let _otpExpiresAt = null;
+let _resendTimerId = null;
+
+// Demo user -> mobile mapping (replace with real API in production)
+const demoUsers = {
+    'user123': '+1-555-234-7890',
+    'alice': '+44-7700-900123',
+    'bob': '+91-98765-43210'
+};
+
+function maskMobile(m) {
+    if (!m) return '';
+    // keep last 4 digits, mask the rest
+    const digits = m.replace(/\D/g,'');
+    if (digits.length <= 4) return m;
+    const last4 = digits.slice(-4);
+    return '****' + last4;
+}
+
+function showRecover() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registerForm').classList.add('hidden');
+    resetRecoverForm();
+    document.getElementById('recoverForm').classList.remove('hidden');
+}
+
+function generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit
+}
+
+function resetRecoverForm() {
+    // hide recover UI
+    const recoverForm = document.getElementById('recoverForm');
+    if (recoverForm) recoverForm.classList.add('hidden');
+
+    // reset steps
+    const s1 = document.getElementById('recoverStep1');
+    const s2 = document.getElementById('recoverStep2');
+    const s3 = document.getElementById('recoverStep3');
+    if (s1) s1.classList.remove('hidden');
+    if (s2) s2.classList.add('hidden');
+    if (s3) s3.classList.add('hidden');
+
+    // clear inputs
+    const ids = ['recoverUserId','recoverOtpInput','newPassword','confirmNewPassword'];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+
+    // clear otp state and timers
+    _currentOtp = null;
+    _otpExpiresAt = null;
+    if (_resendTimerId) { clearInterval(_resendTimerId); _resendTimerId = null; }
+    const resendBtn = document.getElementById('resendBtn');
+    const timerLabel = document.getElementById('resendTimer');
+    if (resendBtn) { resendBtn.disabled = false; }
+    if (timerLabel) { timerLabel.textContent = ''; }
+    // clear inline error
+    const err = document.getElementById('recoverUserError');
+    if (err) { err.textContent = ''; err.classList.add('hidden'); }
+}
+
+function sendOTP() {
+    const userId = document.getElementById('recoverUserId').value.trim();
+    const errEl = document.getElementById('recoverUserError');
+    // clear previous error
+    if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+    if (!userId) { if (errEl) { errEl.textContent = 'Please enter your User ID'; errEl.classList.remove('hidden'); } return; }
+
+    // Try server API first, fallback to demo mapping
+    (async () => {
+        try {
+            const res = await apiFetch('/api/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+                if (data.success) {
+                    // server sent OTP; data.maskedMobile is preferred
+                    const masked = data.maskedMobile || maskMobile(demoUsers[userId]);
+                    _currentOtp = data.otp || null; // only for demo/testing
+                    _otpExpiresAt = Date.now() + 5 * 60 * 1000;
+                    document.getElementById('recoverStep1').classList.add('hidden');
+                    document.getElementById('recoverStep2').classList.remove('hidden');
+                    alert('OTP sent to ' + masked + (data.otp ? '\nOTP: ' + data.otp : '\nCheck your mobile'));
+                    startResendTimer(30);
+                    return;
+                } else {
+                    // server returned a not-found / error for this user
+                    if (errEl) { errEl.textContent = data.message || 'User ID not recognized. Please check and try again.'; errEl.classList.remove('hidden'); }
+                    return;
+                }
+            }
+        } catch (e) {
+            // network or server error — continue to fallback
+        }
+
+        // Fallback to demo mapping
+        const mobile = demoUsers[userId];
+        if (!mobile) { if (errEl) { errEl.textContent = 'User ID not recognized. Please check and try again.'; errEl.classList.remove('hidden'); } return; }
+        _currentOtp = generateOtp();
+        _otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
+        document.getElementById('recoverStep1').classList.add('hidden');
+        document.getElementById('recoverStep2').classList.remove('hidden');
+        const masked = maskMobile(mobile);
+        alert('OTP sent to ' + masked + ' (simulated).\nOTP: ' + _currentOtp + '\nIt expires in 5 minutes');
+        startResendTimer(30);
+    })();
+}
+
+function startResendTimer(seconds) {
+    const resendBtn = document.getElementById('resendBtn');
+    const timerLabel = document.getElementById('resendTimer');
+    resendBtn.disabled = true;
+    timerLabel.textContent = `You can resend in ${seconds}s`;
+
+    clearInterval(_resendTimerId);
+    let remaining = seconds;
+    _resendTimerId = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+            clearInterval(_resendTimerId);
+            resendBtn.disabled = false;
+            timerLabel.textContent = '';
+        } else {
+            timerLabel.textContent = `You can resend in ${remaining}s`;
+        }
+    }, 1000);
+}
+
+function resendOTP() {
+    if (document.getElementById('resendBtn').disabled) return;
+    const userId = document.getElementById('recoverUserId').value.trim();
+    (async () => {
+        try {
+            const res = await apiFetch('/api/resend-otp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+                _currentOtp = data.otp || null;
+                _otpExpiresAt = Date.now() + 5 * 60 * 1000;
+                alert('Resent OTP (server): ' + (data.otp || 'sent to your mobile'));
+                startResendTimer(30);
+                return;
+            }
+        } catch (e) {}
+
+        // fallback
+        _currentOtp = generateOtp();
+        _otpExpiresAt = Date.now() + 5 * 60 * 1000;
+        alert('Resent OTP (simulated): ' + _currentOtp);
+        startResendTimer(30);
+    })();
+}
+
+function verifyOTP() {
+    const entered = document.getElementById('recoverOtpInput').value.trim();
+    if (!entered) { alert('Enter the OTP'); return; }
+    const userId = document.getElementById('recoverUserId').value.trim();
+
+    (async () => {
+        try {
+            const res = await apiFetch('/api/verify-otp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, otp: entered }) });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+                document.getElementById('recoverStep2').classList.add('hidden');
+                document.getElementById('recoverStep3').classList.remove('hidden');
+                return;
+            }
+        } catch (e) {}
+
+        // fallback to local verification
+        if (!_currentOtp || Date.now() > _otpExpiresAt) { alert('OTP expired. Please resend.'); return; }
+        if (entered !== _currentOtp) { alert('Invalid OTP'); return; }
+        document.getElementById('recoverStep2').classList.add('hidden');
+        document.getElementById('recoverStep3').classList.remove('hidden');
+    })();
+}
+
+function resetPassword() {
+    const p1 = document.getElementById('newPassword').value;
+    const p2 = document.getElementById('confirmNewPassword').value;
+    const userId = document.getElementById('recoverUserId').value.trim();
+    if (p1 !== p2) { alert('Passwords do not match'); return; }
+    if (!validatePassword(p1)) { alert('Password must be 8-16 characters, include letters, numbers & special characters'); return; }
+
+    (async () => {
+        try {
+            const res = await apiFetch('/api/reset-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, password: p1 }) });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+                _currentOtp = null; _otpExpiresAt = null; clearInterval(_resendTimerId);
+                alert(data.message || 'Password reset successful ✅');
+                showSignIn();
+                return;
+            }
+        } catch (e) {}
+
+        // fallback simulated
+        _currentOtp = null; _otpExpiresAt = null; clearInterval(_resendTimerId);
+        alert('Password reset successful ✅ (simulated)');
+        showSignIn();
+    })();
+}
+</script>
+
+</body>
+</html>
