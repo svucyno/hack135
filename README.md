@@ -137,3 +137,43 @@ Output:
 CivicAI is an attempt to improve the efficiency of civic problem management by combining technology with community involvement. Instead of acting as a passive reporting system, it actively guides users toward solutions and encourages collaborative action.
 
 Even a simple system that provides clarity and direction can significantly improve how civic issues are handled in everyday life.
+
+## Setup Instructions
+
+### Prerequisites
+- Python 3.7 or higher
+- pip (Python package installer)
+
+### Installation
+
+1. Clone or navigate to the project directory:
+   ```
+   cd d:\civicai
+   ```
+
+2. Install Python dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+3. Run the Flask application:
+   ```
+   python app.py
+   ```
+
+4. Open your web browser and go to:
+   ```
+   http://localhost:5000
+   ```
+
+### Usage
+
+1. Enter a description of your civic problem in the text area
+2. Click "Analyze Problem"
+3. View the analysis results including category, priority, suggested entity, and recommendations
+
+### Development
+
+- The main Flask application is in `app.py`
+- HTML templates are in the `templates/` directory
+- Static files (CSS/JS) can be added to a `static/` directory if needed

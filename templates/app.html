@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicAI Dashboard</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#f3f4f6;
+color:#111;
+}
+
+/* Header */
+header{
+display:flex;
+justify-content:center;
+flex-direction:column;
+padding:15px 20px;
+background:#fff;
+align-items:center;
+text-align:center;
+position:relative;
+}
+
+header button{
+position:absolute;
+top:15px;
+right:20px;
+background:white;
+color:#dc2626;
+border:2px solid #dc2626;
+padding:8px 15px;
+border-radius:20px;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* Container */
+.container{padding:15px}
+
+/* Cards */
+.card{
+background:white;
+margin:12px 0;
+padding:12px;
+border-radius:15px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1)
+}
+
+.card img{
+width:100%;
+aspect-ratio:16/9;
+object-fit:cover;
+border-radius:12px
+}
+
+.card p{
+margin-top:8px;
+font-weight:bold;
+color:#dc2626
+}
+
+/* Bottom Nav */
+.bottom-nav{
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
+border-top:1px solid #ddd
+}
+
+.bottom-nav div{
+display:flex;
+flex-direction:column;
+align-items:center;
+font-size:12px;
+color:#6b7280;
+cursor:pointer
+}
+
+.bottom-nav div span{font-size:20px}
+
+.bottom-nav div.active{
+color:#dc2626;
+font-weight:bold
+}
+
+.hidden{display:none}
+
+/* Form */
+input,select,textarea{
+width:100%;
+margin:6px 0;
+padding:10px;
+border-radius:10px;
+border:1px solid #ccc
+}
+
+button.submit{
+background:#dc2626;
+color:white;
+margin-top:10px;
+border:none;
+padding:10px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer
+}
+
+/* Chat Page */
+.chat-center{
+display:flex;
+justify-content:center;
+align-items:center;
+height:70vh;
+}
+
+.chat-box{
+width:90%;
+max-width:400px;
+background:white;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.chat-header{
+background:#dc2626;
+color:white;
+padding:10px;
+text-align:center;
+}
+
+.chat-messages{
+height:250px;
+overflow-y:auto;
+padding:10px;
+}
+
+.chat-input{
+display:flex;
+border-top:1px solid #ddd;
+}
+
+.chat-input input{
+flex:1;
+border:none;
+padding:10px;
+}
+
+.chat-input button{
+background:#dc2626;
+color:white;
+border:none;
+padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<button onclick="goLogin()">Login Page</button>
+
+<h1 style="font-size:36px;color:#dc2626;font-weight:bold;letter-spacing:2px">CivicAI</h1>
+<p style="font-size:20px;font-weight:bold;margin-top:6px">Smart Civic Problem Management</p>
+
+<marquee style="background:#dc2626;color:white;padding:10px;border-radius:10px;margin-top:10px;width:90%">
+📊 Today 120 Problems Reported | ✅ 85 Problems Solved | 👥 300 Complaints Received | 🛠 50 Workers Active
+</marquee>
+</header>
+
+<!-- HOME -->
+<div class="container" id="home">
+<h2 style="color:#dc2626">🔥 Public Problems Feed</h2>
+
+<div class="card">
+<img src="https://www.fijitimes.com.fj/wp-content/uploads/2025/02/Bustand1.jpg">
+<p>Road Problem</p>
+</div>
+
+<div class="card">
+<img src="https://bestdrainage.ca/wp-content/uploads/2025/03/Sewer-Drainage-repair-BEST.jpeg">
+<p>Drainage Problem</p>
+</div>
+
+<div class="card">
+<img src="https://tse2.mm.bing.net/th/id/OIP.419LPhQYAhlKULsjH_5NwAHaEK?pid=Api&P=0&h=180">
+<p>Electrical Problem</p>
+</div>
+
+<div class="card">
+<img src="https://tse1.mm.bing.net/th/id/OIP.dJnT6ZLpNkwa6aX---xE8QHaE7?pid=Api&P=0&h=180">
+<p>Sanitary Problem</p>
+</div>
+
+<h3 style="color:#dc2626">Why Use CivicAI?</h3>
+<p>- Easy complaint submission</p>
+<p>- Real-time tracking</p>
+<p>- AI fake detection</p>
+<p>- Fast response</p>
+<p>- Transparent system</p>
+<p>- Location based</p>
+<p>- Contribution score</p>
+<p>- Public awareness</p>
+<p>- Smart categories</p>
+<p>- AI chatbot</p>
+</div>
+
+<!-- PROBLEMS -->
+<div class="container hidden" id="problems">
+<h3>Problems List</h3>
+<div class="card">⚡ Electrical Issue →</div>
+<div class="card">💧 Drainage Issue →</div>
+<div class="card">🛣 Road Issue →</div>
+<div class="card">🏥 Health Issue →</div>
+</div>
+
+<!-- ADD -->
+<div class="container hidden" id="add">
+<h3>Add Problem</h3>
+<input placeholder="Problem Name">
+<input placeholder="Location">
+<select>
+<option>Electrical</option>
+<option>Drainage</option>
+<option>Road</option>
+<option>Health</option>
+<option>Sanitary</option>
+<option>Water</option>
+</select>
+<textarea placeholder="Description"></textarea>
+<input type="file" id="imageUpload">
+<button class="submit" onclick="checkImage()">Submit</button>
+<p id="msg"></p>
+</div>
+
+<!-- CHAT PAGE -->
+<div class="container hidden" id="chat">
+<div class="chat-center">
+
+<div class="chat-box">
+<div class="chat-header">🤖 CivicAI Chatbot</div>
+
+<div class="chat-messages" id="chatMessages"></div>
+
+<div class="chat-input">
+<input id="chatInput" placeholder="Ask civic problem...">
+<button onclick="sendMsg()">Send</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- PROFILE -->
+<div class="container hidden" id="profile">
+<h3>User Profile</h3>
+<p>User ID: 12345</p>
+<p>Location: Nellore</p>
+<p>Contribution Score: 70</p>
+<canvas id="chart"></canvas>
+</div>
+
+<!-- NAV -->
+<div class="bottom-nav">
+<div onclick="show('home')" class="active"><span>🏠</span>Home</div>
+<div onclick="show('problems')"><span>📋</span>Problems</div>
+<div onclick="show('add')"><span>➕</span>Add</div>
+<div onclick="show('chat')"><span>🤖</span>AI</div>
+<div onclick="show('profile')"><span>👤</span>Profile</div>
+</div>
+
+<script>
+function show(page){
+document.querySelectorAll('.container').forEach(p=>p.classList.add('hidden'))
+document.getElementById(page).classList.remove('hidden')
+}
+
+function goLogin(){
+window.location.href='/login'
+}
+
+function checkImage(){
+let file=document.getElementById('imageUpload').files[0]
+if(!file){
+document.getElementById('msg').innerText='Upload image'
+return
+}
+if(file.name.includes('ai')){
+document.getElementById('msg').innerText='Rejected: AI Image'
+}else{
+document.getElementById('msg').innerText='Uploaded'
+}
+}
+
+let canvas=document.getElementById('chart')
+let ctx=canvas.getContext('2d')
+canvas.width=300
+canvas.height=150
+ctx.fillRect(10,100,30,-50)
+ctx.fillRect(60,100,30,-70)
+ctx.fillRect(110,100,30,-30)
+
+function sendMsg(){
+let input=document.getElementById('chatInput')
+let msg=input.value
+if(!msg) return
+
+let chat=document.getElementById('chatMessages')
+chat.innerHTML+=`<p><b>You:</b> ${msg}</p>`
+
+let reply="Civic issue received 👍"
+chat.innerHTML+=`<p><b>Bot:</b> ${reply}</p>`
+
+input.value=""
+}
+</script>
+
+</body>
+</html>
